@@ -1,4 +1,4 @@
-package org.aujee.com.search_engine;
+package org.aujee.com.searchengine;
 
 import org.apache.tomcat.util.threads.TaskQueue;
 import org.apache.tomcat.util.threads.TaskThreadFactory;

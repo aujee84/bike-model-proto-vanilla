@@ -1,4 +1,4 @@
-package org.aujee.com.search_engine;
+package org.aujee.com.searchengine;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;

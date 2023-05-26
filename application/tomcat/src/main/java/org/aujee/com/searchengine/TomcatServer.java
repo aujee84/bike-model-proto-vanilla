@@ -1,4 +1,4 @@
-package org.aujee.com.search_engine;
+package org.aujee.com.searchengine;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.Engine;
@@ -18,11 +18,9 @@ import org.apache.tomcat.util.net.SSLHostConfigCertificate;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.Executor;
 
 class TomcatServer {
@@ -57,6 +55,19 @@ class TomcatServer {
         server.await();
     }
 
+    public static void stop() {
+        if (tomcat != null) {
+            try {
+                tomcat.stop();
+                tomcat.destroy();
+            } catch (LifecycleException e) {
+                System.out.println("Stop procedure failure - unexpected error.");
+            } finally {
+
+            }
+        }
+    }
+
     private TomcatServer (ExecutorType type) {
         endpointExecutor = EndpointExecutorCustomizer.withExecutor(type);
         serviceExecutor = ServiceExecutorCustomizer.withExecutor(type);
@@ -87,6 +98,7 @@ class TomcatServer {
         context.addLifecycleListener(new ContextConfig());
         WebResourceRoot root = new StandardRoot(context);
         URL url = findClassLocation(Main.class);
+        System.out.println(url.toString());
         root.createWebResourceSet(WebResourceRoot.ResourceSetType.PRE, "/WEB-INF/classes", url, "/");
         context.setResources(root);
     }

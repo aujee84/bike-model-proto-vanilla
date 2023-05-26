@@ -1,3 +1,3 @@
-package org.aujee.com.search_engine;
+package org.aujee.com.searchengine;
 
 enum ExecutorType {DEFAULT, VIRTUAL}
