@@ -15,11 +15,11 @@ public enum ProcEnvironment {
     private final Types typeUtils;
 
     ProcEnvironment() {
-        ProcessingEnvironment roundEnvironment = StartUpProcessor.getEnvironment();
-        messager = roundEnvironment.getMessager();
-        filer = roundEnvironment.getFiler();
-        elementUtils = roundEnvironment.getElementUtils();
-        typeUtils = roundEnvironment.getTypeUtils();
+        ProcessingEnvironment procEnvironment = StartUpProcessor.getEnvironment();
+        messager = procEnvironment.getMessager();
+        filer = procEnvironment.getFiler();
+        elementUtils = procEnvironment.getElementUtils();
+        typeUtils = procEnvironment.getTypeUtils();
     }
 
     public Filer filer() {
