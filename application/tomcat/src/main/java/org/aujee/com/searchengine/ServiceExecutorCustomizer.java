@@ -4,13 +4,12 @@ import org.apache.catalina.LifecycleException;
 import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.LifecycleState;
 import org.apache.catalina.core.StandardThreadExecutor;
-
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
 class ServiceExecutorCustomizer implements  org.apache.catalina.Executor {
 
-    private final String executorPlaceHolder = "ofService-";
+    private static final String executorPlaceHolder = "ofService-";
     private String executorName;
     private Executor executor;
 

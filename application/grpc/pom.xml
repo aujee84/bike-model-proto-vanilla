@@ -7,13 +7,12 @@
     <parent>
         <groupId>org.aujee.com</groupId>
         <artifactId>parent</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>${revision}${changelist}</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>org.aujee.com.searchengine</groupId>
     <artifactId>grpc</artifactId>
-    <version>1.0-SNAPSHOT</version>
 
     <packaging>jar</packaging>
 

@@ -6,16 +6,22 @@
 
     <groupId>org.aujee.com</groupId>
     <artifactId>parent</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>${revision}${changelist}</version>
 
     <packaging>pom</packaging>
 
     <properties>
+        <revision>1.0.0</revision>
+        <changelist>-SNAPSHOT</changelist>
+
         <java.version>20</java.version>
         <java.vendor>openJDK</java.vendor>
+
         <Main-Class>org.aujee.com.searchengine.Main</Main-Class>
+
         <project.scm.id>github</project.scm.id>
 
+        <properties-maven-plugin>1.1.0</properties-maven-plugin>
         <maven-compiler-plugin>3.10.1</maven-compiler-plugin>
         <maven-toolchains-plugin>3.1.0</maven-toolchains-plugin>
         <maven-surefire-plugin>3.0.0</maven-surefire-plugin>
@@ -23,15 +29,71 @@
         <maven-enforcer-plugin>3.3.0</maven-enforcer-plugin>
         <maven-jar-plugin>3.3.0</maven-jar-plugin>
         <maven-shade-plugin>3.4.1</maven-shade-plugin>
+
+        <module1.name>grpc</module1.name>
+        <module2.name>tomcat</module2.name>
     </properties>
 
     <modules>
-        <module>dependencies</module>
         <module>versioning</module>
+        <module>dependencies</module>
         <module>application</module>
-        <module>application/grpc</module>
-        <module>application/tomcat</module>
+        <module>application/${module1.name}</module>
+        <module>application/${module2.name}</module>
     </modules>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <properties>
+                <env>local</env>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>${properties-maven-plugin}</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <urls>
+<!--                                        <url>file:///${user.home}/AppFiles/Config/bike-model-proto-vanilla/${module1.name}.properties</url>-->
+                                        <url>file:///${user.home}/AppFiles/Config/bike-model-proto-vanilla/${module2.name}.properties</url>
+                                    </urls>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+
+        </profile>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <env>dev</env>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <env>prod</env>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>test</id>
+            <properties>
+                <env>test</env>
+            </properties>
+        </profile>
+    </profiles>
 
     <build>
         <pluginManagement>
@@ -42,7 +104,10 @@
                 <version>${maven-compiler-plugin}</version>
                 <configuration>
                     <release>${java.version}</release>
-                    <compilerArgs>--enable-preview</compilerArgs>
+                    <enablePreview>true</enablePreview>
+                    <compilerArgs>
+                        <arg>-J--enable-preview</arg>
+                    </compilerArgs>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -190,8 +255,42 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.0-M4</version>
+                <artifactId>maven-help-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>show-profiles</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>active-profiles</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.5.0</version>
+                <configuration>
+                    <updatePomFile>true</updatePomFile>
+                    <flattenMode>resolveCiFriendliesOnly</flattenMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -208,7 +307,7 @@
             <dependency>
                 <groupId>org.aujee.com</groupId>
                 <artifactId>versioning</artifactId>
-                <version>${project.version}</version>
+                <version>${revision}${changelist}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

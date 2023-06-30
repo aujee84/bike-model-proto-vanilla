@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.time.Duration;
 
-
 class MainIT {
 
     @Test

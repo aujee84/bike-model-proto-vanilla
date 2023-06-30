@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 class EndpointExecutorCustomizer implements Executor {
 
-    private final String executorPlaceHolder = "ofEndpoint-";
+    private static final String executorPlaceHolder = "ofEndpoint-";
     private String executorName;
     private Executor executor;
 
