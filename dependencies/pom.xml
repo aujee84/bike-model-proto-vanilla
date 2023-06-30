@@ -18,6 +18,10 @@
         <junitbom.version>5.9.3</junitbom.version>
         <testng.version>7.7.1</testng.version>
         <assertj.version>3.24.2</assertj.version>
+        <log4j.version>2.20.0</log4j.version>
+        <typesafe.version>1.4.2</typesafe.version>
+
+        <lib.version>1.0.0</lib.version>
     </properties>
 
     <dependencyManagement>
@@ -68,6 +72,25 @@
                 <version>${assertj.version}</version>
                 <scope>test</scope>
             </dependency>
+
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-slf4j-impl</artifactId>
+                <version>${log4j.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.typesafe</groupId>
+                <artifactId>config</artifactId>
+                <version>${typesafe.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.aujee.com</groupId>
+                <artifactId>lib</artifactId>
+                <version>${lib.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>

@@ -1,6 +1,5 @@
 package org.aujee.com.searchengine;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,11 +15,11 @@ public class MyServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
+    protected void doGet(final HttpServletRequest req, final HttpServletResponse resp) throws IOException {
         PrintWriter writer = resp.getWriter();
 
-        writer.println("<html><title>Welcome</title><body>");
-        writer.println("<h1>Have a Great Day!</h1>");
+        writer.println("<html><title>Wal Sie</title><body>");
+        writer.println("<h1>See You later alligator!</h1>");
         writer.println("</body></html>");
     }
 }

@@ -12,8 +12,12 @@ import org.apache.catalina.startup.Tomcat;
 import org.apache.catalina.webresources.StandardRoot;
 import org.apache.coyote.http11.Http11Nio2Protocol;
 import org.apache.coyote.http2.Http2Protocol;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.tomcat.util.net.SSLHostConfig;
 import org.apache.tomcat.util.net.SSLHostConfigCertificate;
+import org.aujee.com.shared.api.annotations.AutoConfigure;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -23,8 +27,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-class TomcatServer {
-    private static final String HOST_NAME = "localhost";
+
+public class TomcatServer {
     private static ServiceExecutorCustomizer serviceExecutor;
     private static EndpointExecutorCustomizer endpointExecutor;
     private static Tomcat tomcat;
@@ -33,12 +37,33 @@ class TomcatServer {
     private static Engine engine;
     private static Connector[] webConnectors;
     private static Context context;
-    private Path keystoreFile;
-    private String keystorePassword;
-    private String keyAlias;
+    private static boolean created = false;
+
+    @AutoConfigure
+    private static String hostName;
+    @AutoConfigure
+    private static int securePort;
+    @AutoConfigure
+    private static Integer inSecurePort;
+    @AutoConfigure
+    private static String keyStoreFile;
+    @AutoConfigure
+    private static String keystorePassword;
+    @AutoConfigure
+    private static String keyAlias;
+
+    private static final Logger LOGGER = LogManager.getLogger(TomcatServer.class);
 
     public static void start(ExecutorType executorType, int utilityThreads) throws IOException {
-        TomcatServer tomcatServer = new TomcatServer(executorType);
+        try {
+            if (created) {
+                throw new LifecycleException("Two Tomcat's in one app...?");
+            }
+        } catch (LifecycleException e) {
+            throw new RuntimeException(e);
+        }
+        new TomcatServer(executorType);
+        created = true;
         configureServer(server, utilityThreads);
         configureService(service, executorType);
         configureEngine(engine);
@@ -63,7 +88,7 @@ class TomcatServer {
             } catch (LifecycleException e) {
                 System.out.println("Stop procedure failure - unexpected error.");
             } finally {
-
+                //provide directory/file cleanup
             }
         }
     }
@@ -91,14 +116,13 @@ class TomcatServer {
     }
 
     private static void configureEngine (Engine engine) {
-        engine.setDefaultHost(HOST_NAME);
+        engine.setDefaultHost(hostName);
     }
 
     private static void configureContext (Context context) {
         context.addLifecycleListener(new ContextConfig());
         WebResourceRoot root = new StandardRoot(context);
         URL url = findClassLocation(Main.class);
-        System.out.println(url.toString());
         root.createWebResourceSet(WebResourceRoot.ResourceSetType.PRE, "/WEB-INF/classes", url, "/");
         context.setResources(root);
     }
@@ -110,10 +134,8 @@ class TomcatServer {
                     sslHostConfig, SSLHostConfigCertificate.Type.RSA);
 
             SSLHostConfig provide() {
-                keystoreFile = Path.of(System.getProperty("user.home") + "/selfsigned.jks");
-                keyAlias = "tomcat";
-                keystorePassword = "zabka98";
-                cert.setCertificateKeystoreFile(keystoreFile.toAbsolutePath().toString());
+                Path keystoreFilePath = Path.of(keyStoreFile);
+                cert.setCertificateKeystoreFile(keystoreFilePath.toAbsolutePath().toString());
                 cert.setCertificateKeyAlias(keyAlias);
                 cert.setCertificateKeystorePassword(keystorePassword);
                 sslHostConfig.addCertificate(cert);
@@ -125,7 +147,8 @@ class TomcatServer {
 
         SSLHostConfig sslHostConfig = new SSLHostConfigurer().provide();
         Connector secureConnector = getConnector(executor);
-        secureConnector.setPort(8443);
+
+        secureConnector.setPort(securePort);
         secureConnector.setSecure(true);
         secureConnector.setScheme("https");
         secureConnector.setProperty("SSLEnabled", "true");
@@ -134,7 +157,7 @@ class TomcatServer {
         connectors.add(secureConnector);
 
         Connector inSecureConnector = getConnector(executor);
-        inSecureConnector.setPort(8080);
+        inSecureConnector.setPort(inSecurePort);
         inSecureConnector.setSecure(false);
         inSecureConnector.setScheme("http");
 
