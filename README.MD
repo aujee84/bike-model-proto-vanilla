@@ -19,15 +19,15 @@ Build process is bound to Maven compile lifecycle.
             </resource>
         </resources>
 ````
-2. Install lib to your local maven repository
-3. Annotate your uninitialized static fields.
-4. Compile - processor will create raw application.properties file in generated-sources directory, and AutoConfig helper class. Example:
+3. Install lib to your local maven repository.
+4. Annotate your uninitialized static fields.
+5. Compile - processor will create raw application.properties file in generated-sources directory, and AutoConfig helper class. Example:
 ````
    org.company.com.mypackage.MyClass.keyStoreFile=${org.company.com.mypackage.MyClass.keyStoreFile}
 ````
-5. Copy application.properties to standard location : src/main/resources/env and write property values.
-6. If filter and profiles are used change file name (e.g. application.dev.properties)
-7. If you really don't want to show your properties create a local profile e.g.
+6. Copy application.properties to standard location : src/main/resources/env and write property values.
+7. If filter and profiles are used change file name (e.g. application.dev.properties).
+8. If you really don't want to show your properties create a local profile e.g.
 ````
 <profile>
             <id>local</id>
@@ -65,14 +65,15 @@ Build process is bound to Maven compile lifecycle.
             </properties>
         </profile>
 ````
-Now application.local.properties can be empty
-6. Compile - maven will map values and provide proper application.properties file to standard output.
-7. To initialize in runtime use
+Now application.local.properties can be empty.
+
+9. Compile - maven will map values and provide proper application.properties file to standard output.
+10. To initialize in runtime use:
 ````
 AutoInitializer.ConfigurationHandler.initialize();
 ````
-6. Whenever you want to use installed annotation processor be sure that -J--enable-preview is present in pom's compiler plugin configuration arg in the module that uses the annotation processor.
-7. To build/run in IDE you have two options: 
+11. Whenever you want to use installed annotation processor be sure that -J--enable-preview is present in pom's compiler plugin configuration arg in the module that uses the annotation processor.
+12. To build/run in IDE you have two options: 
     a) Delegate IDE build and run to Maven or
     b) for Intellij
     run/debug configurations: -> add VM options :--enable-preview        
